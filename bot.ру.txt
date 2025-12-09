@@ -1,0 +1,39 @@
+import os, asyncio
+from aiogram import Bot, Dispatcher, F
+from aiogram.filters import Command
+from aiogram.types import Message, InlineKeyboardMarkup, InlineKeyboardButton,
+ChatJoinRequest
+BOT_TOKEN = os.getenv("BOT_TOKEN")
+RU_CHAT_ID = int(os.getenv("RU_CHAT_ID", "0"))
+ES_CHAT_ID = int(os.getenv("ES_CHAT_ID", "0"))
+bot = Bot(BOT_TOKEN)
+dp = Dispatcher()
+def kb_lang():
+return InlineKeyboardMarkup(inline_keyboard=[
+[InlineKeyboardButton(text="Войти в канал 🇷🇺 ", callback_data="join_ru")],
+[InlineKeyboardButton(text="Entrar al canal 🇪🇸 ", callback_data="join_es")]
+])
+@dp.message(Command("start"))
+async def start(m: Message):
+await m.answer("Привет! Выбери канал/язык 👇 \nHola! Elige tu canal/idioma 👇 ",
+reply_markup=kb_lang())
+@dp.callback_query(F.data=="join_ru")
+async def join_ru(cq):
+await cq.answer()
+проверки.")
+await cq.message.answer("Подай заявку на вступление в RU-канал — бот одобрит после
+@dp.callback_query(F.data=="join_es")
+async def join_es(cq):
+await cq.answer()
+await cq.message.answer("Envía solicitud al canal ES — el bot aprobará tras la verificación.")
+@dp.chat_join_request()
+async def on_join(r: ChatJoinRequest):
+try:
+await r.approve()
+await bot.send_message(r.from_user.id, "Доступ одобрен ✅ except Exception as e:
+print("join error:", e)
+Добро пожаловать!")
+async def main():
+await dp.start_polling(bot)
+if __name__ == "__main__":
+asyncio.run(main())
